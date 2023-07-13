@@ -2,6 +2,7 @@ package com.warhammer.api.model;
 
 import java.util.Collection;
 
+
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -14,6 +15,13 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+/*
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.JoinColumn;
+*/
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
@@ -30,32 +38,43 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "profil")
-public class Profil implements UserDetails{
+@Table(name = "user")
+public class User implements UserDetails{
 	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	 private long idProfil;
-	@Column(name="mineur_majeur")
-	 private Boolean mineurMajeur;
-	@Column(name="genre_profil")
-	 private Boolean genreProfil;
-	@Column(name="id_role")
-	private int idRole;
-	@Column(name="pseudo")
+	 private long idUser;
 	 private String username;
-	 private int age;
 	 private String mail;
 	 private String password;
+	 @Column(name="id_role")
+	 private int idRole;
+	 /*
+	 @JdbcTypeCode(SqlTypes.JSON)
+	 @Transient
+	 @ManyToOne
+	 @JoinTable(name="role",
+			 joinColumns = {@JoinColumn(name="id_role")},
+			 inverseJoinColumns = {@JoinColumn(name="id_role")})
+	 private Role role;
+	 */
 	 @Enumerated(EnumType.STRING)
 	 @Transient
-	 private Rank role;
+	 private Rank rank;
 	 
 	@Override
 	public String getUsername() {
 		// TODO Auto-generated method stub
 		return username;
+	}
+	public Rank getRank() {
+		if(this.idRole == 1) {
+			this.setRank(Rank.ADMIN);
+		} else {
+			this.setRank(Rank.USER);
+		}
+		return this.rank;
 	}
 	@Override
 	public boolean isAccountNonExpired() {
@@ -81,10 +100,10 @@ public class Profil implements UserDetails{
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		// TODO Auto-generated method stub
 		if(this.idRole == 1) {
-			this.setRole(Rank.ADMIN);
+			this.setRank(Rank.ADMIN);
 		} else {
-			this.setRole(Rank.USER);
+			this.setRank(Rank.USER);
 		}
-		return role.getAuthorities();
+		return rank.getAuthorities();
 	}
 }

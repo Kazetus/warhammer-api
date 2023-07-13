@@ -9,14 +9,14 @@ import org.springframework.stereotype.Service;
 import com.warhammer.api.config.Rank;
 import com.warhammer.api.model.AuthenticationRequest;
 import com.warhammer.api.model.AuthenticationResponse;
-import com.warhammer.api.model.Profil;
+import com.warhammer.api.model.User;
 import com.warhammer.api.model.RegisterRequest;
-import com.warhammer.api.repository.ProfilRepository;
+import com.warhammer.api.repository.UserRepository;
 
 @Service
 public class AuthenticationService {
 	@Autowired
-	private ProfilRepository repository;
+	private UserRepository repository;
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 	@Autowired
@@ -25,15 +25,12 @@ public class AuthenticationService {
 	private AuthenticationManager authManager;
 
 	public AuthenticationResponse register(RegisterRequest request) {
-		Profil user = Profil.builder()
+		User user = User.builder()
 				.username(request.getUsername())
 				.password(passwordEncoder.encode(request.getPassword()))
 				.mail(request.getMail())
-				.age(request.getAge())
-				.genreProfil(request.getGenreProfil())
-				.mineurMajeur(request.getMineurMajeur())
-				.idRole(1)
-				.role(Rank.USER)
+				.idRole(2)
+				.rank(Rank.USER)
 				.build();
 		repository.save(user);
 		var jwtToken = jwtService.generateToken(user);
@@ -44,7 +41,7 @@ public class AuthenticationService {
 
 	public AuthenticationResponse authentication(AuthenticationRequest request) {
 		authManager.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(),request.getPassword()));
-		Profil user = repository.findByUsername(request.getUsername()).orElseThrow();
+		User user = repository.findByUsername(request.getUsername()).orElseThrow();
 		var jwtToken = jwtService.generateToken(user);
 		return AuthenticationResponse.builder()
 				.token(jwtToken)

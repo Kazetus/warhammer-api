@@ -11,7 +11,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import com.warhammer.api.repository.ProfilRepository;
+import com.warhammer.api.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -19,14 +19,14 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ApplicationConfig {
 	
-	private final ProfilRepository profilRepository;
-
+	private final UserRepository userRepository;
+	// I'm verifying that the user is presents in the database
     @Bean
     UserDetailsService userDetailsService() {
-		return username -> profilRepository.findByUsername(username)
+		return username -> userRepository.findByUsername(username)
 				.orElseThrow(() -> new UsernameNotFoundException("User not found"));
 	}
-
+    // I'm giving an authentication to the user.
     @Bean
     AuthenticationProvider authenticationProvider() {
 		DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
@@ -34,12 +34,11 @@ public class ApplicationConfig {
 		authProvider.setPasswordEncoder(passwordEncoder());
 		return authProvider;
 	}
-
     @Bean
     AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception{
 		return config.getAuthenticationManager();
 	}
-
+    // I define the hashing algorithm I will use for password hash.
     @Bean
     PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();

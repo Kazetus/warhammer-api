@@ -14,12 +14,22 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-@Table(name = "weather")
-public class Weather {
+@Table(name = "units")
+public class Units {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	 private long idWeather;
-	
-	@Column(name="weather_name")
-	 private String weatherName;
+	 private long idUnits;
+	@Column(name="units_name")
+	private String unitsName;
+	@Column(name="nombre_figurine")
+	private int nombreFigurine;
+	private int points;
+	@Column(name="id_faction")
+	private int idFaction;
+	/*
+	@JoinTable(name="faction",
+			joinColumns= {@JoinColumn(name="id_faction")}
+	)
+	private Faction faction;
+	*/
 }

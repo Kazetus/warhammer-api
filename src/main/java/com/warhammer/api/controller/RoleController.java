@@ -10,23 +10,25 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.warhammer.api.model.Role;
 import com.warhammer.api.service.RoleService;
 
 @RestController
+@RequestMapping("/admin")
 public class RoleController {
 
 	@Autowired
 	private RoleService roleService;
 	
-	@GetMapping("/roles")
+	@GetMapping("/role")
 	public Iterable<Role> getRole() {
 		return roleService.getRole();
 	}
 	
-	@GetMapping("/roles/{id}")
+	@GetMapping("/role/{id}")
 	public Role getRole(@PathVariable("id") final Long id){
 		Optional<Role> role = roleService.getRole(id);
 		if(role.isPresent()) {
@@ -35,19 +37,19 @@ public class RoleController {
 			return null;
 		}
 	}
-	@PostMapping("/roles")
+	@PostMapping("/role")
 	public Role createRole(@RequestBody Role role) {
 		return roleService.saveRole(role);
 	}
-	@PutMapping("/roles/{id}")
+	@PutMapping("/role/{id}")
 	public Role updateRole(@PathVariable("id") final Long id, @RequestBody Role role) {
 		Optional<Role> e = roleService.getRole(id);
 		if(e.isPresent()) {
 			Role currentRole = e.get();
 			
-			String roleName = role.getRole();
+			String roleName = role.getRoleName();
 			if(roleName != null) {
-				currentRole.setRole(roleName);
+				currentRole.setRoleName(roleName);
 			}
 			roleService.saveRole(currentRole);
 			return currentRole;
@@ -55,15 +57,15 @@ public class RoleController {
 			return null;
 		}
 	}
-	@PatchMapping("/roles/{id}")
+	@PatchMapping("/role/{id}")
 	public Role patchRole(@PathVariable("id") final Long id, @RequestBody Role role){
 		Optional<Role> e = roleService.getRole(id);
 		if(e.isPresent()) {
 			Role currentRole = e.get();
 			
-			String roleName = role.getRole();
+			String roleName = role.getRoleName();
 			if(roleName != null) {
-				currentRole.setRole(roleName);
+				currentRole.setRoleName(roleName);
 				roleService.saveRole(currentRole);
 			return currentRole;
 			} else {
@@ -73,7 +75,7 @@ public class RoleController {
 			return null;
 		}
 	}
-	@DeleteMapping("/roles/{id}")
+	@DeleteMapping("/role/{id}")
 	public void deleteRole(@PathVariable("id") final Long id) {
 		roleService.deleteRole(id);
 	}

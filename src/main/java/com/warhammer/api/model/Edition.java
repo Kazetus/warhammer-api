@@ -6,7 +6,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,17 +14,12 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-@Table(name = "stade")
-public class Stade {
+@Table(name = "edition")
+public class Edition {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	 private long idStade;
+	 private long idEdition;
 	
-	@Column(name="name_stade")
-	 private String nameStade;
-	
-
-	
-	@Column(name="lvl_stade")
-	 private int lvlStade;
+	@Column(name="edition_name")
+	 private String editionName;
 }
