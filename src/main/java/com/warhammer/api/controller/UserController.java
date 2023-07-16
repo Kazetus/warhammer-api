@@ -1,6 +1,5 @@
 package com.warhammer.api.controller;
 
-import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -10,7 +9,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 //import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 //import org.springframework.security.crypto.password.PasswordEncoder;
@@ -51,9 +49,9 @@ public class UserController {
 	@PutMapping({"/user/{id}", "/admin/{id}"})
 	public User updateUser(@PathVariable("id") final Long id, @RequestBody User user, HttpServletRequest request) {
 		String userIdentity = jwt.extractUsername(request.getHeader("Authorization").substring(7));
-		// récupérer l'utilisateur en base de donnée.
+		Optional<User> userTest = repository.findByUsername(userIdentity);
 		Optional<User> e = userService.getUser(id);
-		if(e.isPresent() && e.get().getIdUser() == userIdentity.getIdUser()) {
+		if(e.isPresent() && e.get().getIdUser() == userTest.get().getIdUser() || userTest.get().getIdRole() == 1) {
 			User currentUser = e.get();
 			
 			String username = user.getUsername();
