@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.warhammer.api.model.Alliance;
@@ -19,34 +18,30 @@ import com.warhammer.api.service.AllianceService;
 import lombok.AllArgsConstructor;
 
 @RestController
-@RequestMapping("/alliance")
 @AllArgsConstructor
-
 public class AllianceController {
 	@Autowired
 	private AllianceService allianceService;
 	
-	@GetMapping("/alliance")
+	@GetMapping({"/public/alliance","user/alliance","admin/alliance"})
 	public Iterable<Alliance> getAlliance() {
 		return allianceService.getAlliance();
 	}
 	
-	@GetMapping("/alliance/{id}")
-	public Alliance getAlliance(@PathVariable("id") final Long id){
+	@GetMapping({"/public/alliance/{id}","user/alliance/id","admin/alliance/{id}"})
+	public Alliance getAlliance(@PathVariable("id") final Long id) throws Exception{
 		Optional<Alliance> alliance = allianceService.getAlliance(id);
 		if(alliance.isPresent()) {
 			return alliance.get();
-		} else {
-			return null;
-		}
+		} else throw new Exception();
 	}
-	@PostMapping("/alliance")
+	@PostMapping("/admin/alliance")
 	public Alliance createAlliance(@RequestBody Alliance alliance) {
 		//alliance.setPassword(passwordEncoder.encode(alliance.getPassword()));
 		return allianceService.saveAlliance(alliance);
 	}
-	@PutMapping("/alliance/{id}")
-	public Alliance updateAlliance(@PathVariable("id") final Long id, @RequestBody Alliance alliance) {
+	@PutMapping("/admin/alliance/{id}")
+	public Alliance updateAlliance(@PathVariable("id") final Long id, @RequestBody Alliance alliance) throws Exception {
 		//alliance.setPassword(passwordEncoder.encode(alliance.getPassword()));
 		Optional<Alliance> e = allianceService.getAlliance(id);
 		if(e.isPresent()) {
@@ -58,12 +53,10 @@ public class AllianceController {
 			}
 			allianceService.saveAlliance(currentAlliance);
 			return currentAlliance;
-		} else {
-			return null;
-		}
+		} else throw new Exception();
 	}
-	@PatchMapping("/alliance/{id}")
-	public Alliance patchAlliance(@PathVariable("id") final Long id, @RequestBody Alliance alliance){
+	@PatchMapping("/admin/alliance/{id}")
+	public Alliance patchAlliance(@PathVariable("id") final Long id, @RequestBody Alliance alliance) throws Exception{
 		//alliance.setPassword(passwordEncoder.encode(alliance.getPassword()));		
 		Optional<Alliance> e = allianceService.getAlliance(id);
 		if(e.isPresent()) {
@@ -74,14 +67,10 @@ public class AllianceController {
 				currentAlliance.setAllianceName(nameAlliance);
 				allianceService.saveAlliance(currentAlliance);
 			return currentAlliance;
-			} else {
-				return null;
-			}
-		} else {
-			return null;
-		}
+			} else throw new Exception();
+		} else throw new Exception();
 	}
-	@DeleteMapping("/alliance/{id}")
+	@DeleteMapping("/admin/alliance/{id}")
 	public void deleteAlliance(@PathVariable("id") final Long id) {
 		allianceService.deleteAlliance(id);
 	}

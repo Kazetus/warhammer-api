@@ -29,20 +29,18 @@ public class RoleController {
 	}
 	
 	@GetMapping("/role/{id}")
-	public Role getRole(@PathVariable("id") final Long id){
+	public Role getRole(@PathVariable("id") final Long id) throws Exception{
 		Optional<Role> role = roleService.getRole(id);
 		if(role.isPresent()) {
 			return role.get();
-		} else {
-			return null;
-		}
+		} else throw new Exception();
 	}
 	@PostMapping("/role")
 	public Role createRole(@RequestBody Role role) {
 		return roleService.saveRole(role);
 	}
 	@PutMapping("/role/{id}")
-	public Role updateRole(@PathVariable("id") final Long id, @RequestBody Role role) {
+	public Role updateRole(@PathVariable("id") final Long id, @RequestBody Role role) throws Exception {
 		Optional<Role> e = roleService.getRole(id);
 		if(e.isPresent()) {
 			Role currentRole = e.get();
@@ -53,12 +51,10 @@ public class RoleController {
 			}
 			roleService.saveRole(currentRole);
 			return currentRole;
-		} else {
-			return null;
-		}
+		} else throw new Exception();
 	}
 	@PatchMapping("/role/{id}")
-	public Role patchRole(@PathVariable("id") final Long id, @RequestBody Role role){
+	public Role patchRole(@PathVariable("id") final Long id, @RequestBody Role role) throws Exception{
 		Optional<Role> e = roleService.getRole(id);
 		if(e.isPresent()) {
 			Role currentRole = e.get();
@@ -68,12 +64,8 @@ public class RoleController {
 				currentRole.setRoleName(roleName);
 				roleService.saveRole(currentRole);
 			return currentRole;
-			} else {
-				return null;
-			}
-		} else {
-			return null;
-		}
+			} else throw new Exception();
+		} else throw new Exception();
 	}
 	@DeleteMapping("/role/{id}")
 	public void deleteRole(@PathVariable("id") final Long id) {

@@ -13,37 +13,46 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 import com.warhammer.api.model.Army;
+import com.warhammer.api.model.User;
+import com.warhammer.api.repository.UserRepository;
 import com.warhammer.api.service.ArmyService;
+import com.warhammer.api.service.JwtService;
+
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.AllArgsConstructor;
 
 @RestController
+@AllArgsConstructor
 public class ArmyController {
 	@Autowired
 	private ArmyService armyService;
+	@Autowired 
+	private UserRepository repository;
+	@Autowired
+	private JwtService jwt;
 	
-	@GetMapping("/army")
+	@GetMapping({"/public/army", "/user/army", "/admin/army"})
 	public Iterable<Army> getArmy() {
 		return armyService.getArmy();
 	}
 	
-	@GetMapping("/army/{id}")
-	public Army getArmy(@PathVariable("id") final Long id){
+	@GetMapping({"/public/army/{id}", "/user/army/{id}", "/admin/army/{id}"})
+	public Army getArmy(@PathVariable("id") final Long id) throws Exception{
 		Optional<Army> army = armyService.getArmy(id);
 		if(army.isPresent()) {
 			return army.get();
-		} else {
-			return null;
-		}
+		} else throw new Exception();
 	}
-	@PostMapping("/army")
+	@PostMapping({"/user/army","/admin/army"})
 	public Army createArmy(@RequestBody Army army) {
-		//army.setPassword(passwordEncoder.encode(army.getPassword()));
 		return armyService.saveArmy(army);
 	}
-	@PutMapping("/army/{id}")
-	public Army updateArmy(@PathVariable("id") final Long id, @RequestBody Army army) {
-		//army.setPassword(passwordEncoder.encode(army.getPassword()));
+	@PutMapping({"/user/army/{id}", "/admin/army/{id}"})
+	public Army updateArmy(@PathVariable("id") final Long id, @RequestBody Army army, HttpServletRequest request) throws Exception {
+		// Verify user before modify
+		Optional<User> userTest = repository.findByUsername(jwt.extractUsername(request.getHeader("Authorization").substring(7)));
 		Optional<Army> e = armyService.getArmy(id);
-		if(e.isPresent()) {
+		if(e.isPresent() && e.get().getIdUser() == userTest.get().getIdUser() || userTest.get().getIdRole() == 1) {
 			Army currentArmy = e.get();
 			
 			String armyName = army.getArmyName();
@@ -56,15 +65,14 @@ public class ArmyController {
 			}
 			armyService.saveArmy(currentArmy);
 			return currentArmy;
-		} else {
-			return null;
-		}
+		} else throw new Exception();
 	}
-	@PatchMapping("/army/{id}")
-	public Army patchArmy(@PathVariable("id") final Long id, @RequestBody Army army){
-		//army.setPassword(passwordEncoder.encode(army.getPassword()));		
+	@PatchMapping({"/user/army/{id}", "/admin/army/{id}"})
+	public Army patchArmy(@PathVariable("id") final Long id, @RequestBody Army army, HttpServletRequest request) throws Exception{
+		// Verify user before modify
+		Optional<User> userTest = repository.findByUsername(jwt.extractUsername(request.getHeader("Authorization").substring(7)));
 		Optional<Army> e = armyService.getArmy(id);
-		if(e.isPresent()) {
+		if(e.isPresent() && e.get().getIdUser() == userTest.get().getIdUser() || userTest.get().getIdRole() == 1) {
 			Army currentArmy = e.get();
 			
 			String armyName = army.getArmyName();
@@ -74,15 +82,16 @@ public class ArmyController {
 				currentArmy.setIdUser(idUser);
 				armyService.saveArmy(currentArmy);
 			return currentArmy;
-			} else {
-				return null;
-			}
-		} else {
-			return null;
-		}
+			} else throw new Exception();
+		} else throw new Exception();
 	}
-	@DeleteMapping("/army/{id}")
-	public void deleteArmy(@PathVariable("id") final Long id) {
+	@DeleteMapping({"/user/army/{id}", "/admin/army/{id}"})
+	public void deleteArmy(@PathVariable("id") final Long id, HttpServletRequest request) throws Exception {
+		// Verify user before delete
+		Optional<User> userTest = repository.findByUsername(jwt.extractUsername(request.getHeader("Authorization").substring(7)));
+		Optional<Army> e = armyService.getArmy(id);
+		if(e.isPresent() && e.get().getIdUser() == userTest.get().getIdUser() || userTest.get().getIdRole() == 1) {
 		armyService.deleteArmy(id);
+		} else throw new Exception();
 	}
 }

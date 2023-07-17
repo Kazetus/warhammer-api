@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.warhammer.api.model.Units;
@@ -19,25 +18,22 @@ import com.warhammer.api.service.UnitsService;
 import lombok.AllArgsConstructor;
 
 @RestController
-@RequestMapping("/")
 @AllArgsConstructor
 public class UnitsController {
 	@Autowired
 	private UnitsService unitsService;
 	
-	@GetMapping({"public/units", "user/units", "admin/units"})
+	@GetMapping({"/public/units","user/units","admin/units"})
 	public Iterable<Units> getUnits() {
 		return unitsService.getUnits();
 	}
 	
-	@GetMapping({"public/units/{id}", "user/units/{id}", "admin/units/{id}"})
-	public Units getUnits(@PathVariable("id") final Long id){
+	@GetMapping({"/public/units/{id}","user/units/{id}","admin/units/{id}"})
+	public Units getUnits(@PathVariable("id") final Long id) throws Exception{
 		Optional<Units> units = unitsService.getUnits(id);
 		if(units.isPresent()) {
 			return units.get();
-		} else {
-			return null;
-		}
+		} else throw new Exception();
 	}
 	@PostMapping("admin/units")
 	public Units createUnits(@RequestBody Units units) {
@@ -45,7 +41,7 @@ public class UnitsController {
 		return unitsService.saveUnits(units);
 	}
 	@PutMapping("admin/units/{id}")
-	public Units updateUnits(@PathVariable("id") final Long id, @RequestBody Units units) {
+	public Units updateUnits(@PathVariable("id") final Long id, @RequestBody Units units) throws Exception {
 		
 		Optional<Units> e = unitsService.getUnits(id);
 		if(e.isPresent()) {
@@ -71,12 +67,10 @@ public class UnitsController {
 			}
 			unitsService.saveUnits(currentUnits);
 			return currentUnits;
-		} else {
-			return null;
-		}
+		} else throw new Exception();
 	}
 	@PatchMapping("admin/units/{id}")
-	public Units patchUnits(@PathVariable("id") final Long id, @RequestBody Units units){
+	public Units patchUnits(@PathVariable("id") final Long id, @RequestBody Units units) throws Exception{
 				
 		Optional<Units> e = unitsService.getUnits(id);
 		if(e.isPresent()) {
@@ -94,12 +88,8 @@ public class UnitsController {
 				currentUnits.setIdFaction(idFaction);
 				unitsService.saveUnits(currentUnits);
 			return currentUnits;
-			} else {
-				return null;
-			}
-		} else {
-			return null;
-		}
+			} else throw new Exception();
+		} else throw new Exception();
 	}
 	@DeleteMapping("admin/units/{id}")
 	public void deleteUnits(@PathVariable("id") final Long id) {

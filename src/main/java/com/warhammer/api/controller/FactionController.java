@@ -18,27 +18,25 @@ public class FactionController {
 	@Autowired
 	private FactionService factionService;
 	
-	@GetMapping("/factions")
+	@GetMapping({"/public/faction", "/user/faction", "/admin/faction"})
 	public Iterable<Faction> getFaction() {
 		return factionService.getFaction();
 	}
 	
-	@GetMapping("/factions/{id}")
-	public Faction getFaction(@PathVariable("id") final Long id){
+	@GetMapping({"/public/faction/{id}", "/user/faction/{id}", "/admin/faction/{id}"})
+	public Faction getFaction(@PathVariable("id") final Long id) throws Exception{
 		Optional<Faction> faction = factionService.getFaction(id);
 		if(faction.isPresent()) {
 			return faction.get();
-		} else {
-			return null;
-		}
+		} else throw new Exception();
 	}
-	@PostMapping("/factions")
+	@PostMapping("/admin/faction")
 	public Faction createFaction(@RequestBody Faction faction) {
 		//faction.setPassword(passwordEncoder.encode(faction.getPassword()));
 		return factionService.saveFaction(faction);
 	}
-	@PutMapping("/factions/{id}")
-	public Faction upidAlliance(@PathVariable("id") final Long id, @RequestBody Faction faction) {
+	@PutMapping("/admin/faction/{id}")
+	public Faction upidAlliance(@PathVariable("id") final Long id, @RequestBody Faction faction) throws Exception {
 		//faction.setPassword(passwordEncoder.encode(faction.getPassword()));
 		Optional<Faction> e = factionService.getFaction(id);
 		if(e.isPresent()) {
@@ -58,12 +56,10 @@ public class FactionController {
 			}
 			factionService.saveFaction(currentFaction);
 			return currentFaction;
-		} else {
-			return null;
-		}
+		} else throw new Exception();
 	}
-	@PatchMapping("/factions/{id}")
-	public Faction patchFaction(@PathVariable("id") final Long id, @RequestBody Faction faction){
+	@PatchMapping("/admin/faction/{id}")
+	public Faction patchFaction(@PathVariable("id") final Long id, @RequestBody Faction faction) throws Exception{
 		//faction.setPassword(passwordEncoder.encode(faction.getPassword()));		
 		Optional<Faction> e = factionService.getFaction(id);
 		if(e.isPresent()) {
@@ -78,14 +74,10 @@ public class FactionController {
 				currentFaction.setIdEdition(idEdition);
 				factionService.saveFaction(currentFaction);
 			return currentFaction;
-			} else {
-				return null;
-			}
-		} else {
-			return null;
-		}
+			} else throw new Exception();
+		} else throw new Exception();
 	}
-	@DeleteMapping("/factions/{id}")
+	@DeleteMapping("/admin/faction/{id}")
 	public void deleteFaction(@PathVariable("id") final Long id) {
 		factionService.deleteFaction(id);
 	}

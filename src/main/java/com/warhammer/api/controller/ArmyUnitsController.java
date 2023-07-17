@@ -11,39 +11,53 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-
+import com.warhammer.api.model.Army;
 import com.warhammer.api.model.ArmyUnits;
+import com.warhammer.api.model.User;
+import com.warhammer.api.repository.ArmyRepository;
+import com.warhammer.api.repository.UserRepository;
 import com.warhammer.api.service.ArmyUnitsService;
+import com.warhammer.api.service.JwtService;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 @RestController
 public class ArmyUnitsController {
 	@Autowired
 	private ArmyUnitsService armyUnitsService;
+	@Autowired 
+	private UserRepository repository;
+	@Autowired
+	private ArmyRepository armyRepository;
+	@Autowired
+	private JwtService jwt;
 	
-	@GetMapping("/armyUnits")
+	
+	@GetMapping({"/public/armyunits", "/user/armyunits", "/admin/armyunits"})
 	public Iterable<ArmyUnits> getArmyUnits() {
 		return armyUnitsService.getArmyUnits();
 	}
 	
-	@GetMapping("/armyUnits/{id}")
-	public ArmyUnits getArmyUnits(@PathVariable("id") final Long id){
+	@GetMapping({"/public/armyunits/{id}", "/user/armyunits/{id}", "/admin/armyunits/{id}"})
+	public ArmyUnits getArmyUnits(@PathVariable("id") final Long id) throws Exception{
 		Optional<ArmyUnits> armyUnits = armyUnitsService.getArmyUnits(id);
 		if(armyUnits.isPresent()) {
 			return armyUnits.get();
-		} else {
-			return null;
-		}
+		} else throw new Exception();
 	}
-	@PostMapping("/armyUnits")
+	@PostMapping({"/user/armyunits", "/admin/armyunits"})
 	public ArmyUnits createArmyUnits(@RequestBody ArmyUnits armyUnits) {
 		
 		return armyUnitsService.saveArmyUnits(armyUnits);
 	}
-	@PutMapping("/armyUnits/{id}")
-	public ArmyUnits updateArmyUnits(@PathVariable("id") final Long id, @RequestBody ArmyUnits armyUnits) {
-		
+	@PutMapping({"/user/armyunits/{id}", "/admin/armyunits/{id}"})
+	public ArmyUnits updateArmyUnits(@PathVariable("id") final Long id, @RequestBody ArmyUnits armyUnits, HttpServletRequest request) throws Exception {
+		// Verify user before modify
+
+		Optional<User> userTest = repository.findByUsername(jwt.extractUsername(request.getHeader("Authorization").substring(7)));
 		Optional<ArmyUnits> e = armyUnitsService.getArmyUnits(id);
-		if(e.isPresent()) {
+		Optional<Army> a = armyRepository.findById((long) e.get().getIdArmy());
+		if(e.isPresent() && a.get().getIdUser() == userTest.get().getIdUser() || userTest.get().getIdRole() == 1) {
 			ArmyUnits currentArmyUnits = e.get();
 			
 			int quantity = armyUnits.getQuantity();
@@ -60,14 +74,16 @@ public class ArmyUnitsController {
 			}
 			armyUnitsService.saveArmyUnits(currentArmyUnits);
 			return currentArmyUnits;
-		} else {
-			return null;
-		}
+		} else throw new Exception();
 	}
-	@PatchMapping("/armyUnits/{id}")
-	public ArmyUnits patchArmyUnits(@PathVariable("id") final Long id, @RequestBody ArmyUnits armyUnits){		
+	@PatchMapping({"/user/armyunits/{id}", "/admin/armyunits/{id}"})
+	public ArmyUnits patchArmyUnits(@PathVariable("id") final Long id, @RequestBody ArmyUnits armyUnits, HttpServletRequest request) throws Exception{		
+		// Verify user before modify
+
+		Optional<User> userTest = repository.findByUsername(jwt.extractUsername(request.getHeader("Authorization").substring(7)));
 		Optional<ArmyUnits> e = armyUnitsService.getArmyUnits(id);
-		if(e.isPresent()) {
+		Optional<Army> a = armyRepository.findById((long) e.get().getIdArmy());
+		if(e.isPresent() && a.get().getIdUser() == userTest.get().getIdUser() || userTest.get().getIdRole() == 1) {
 			ArmyUnits currentArmyUnits = e.get();
 			int quantity = armyUnits.getQuantity();
 			int idArmy = armyUnits.getIdArmy();
@@ -78,15 +94,18 @@ public class ArmyUnitsController {
 				currentArmyUnits.setIdUnits(idUnits);
 				armyUnitsService.saveArmyUnits(currentArmyUnits);
 			return currentArmyUnits;
-			} else {
-				return null;
-			}
-		} else {
-			return null;
-		}
+			} else throw new Exception();
+		} else throw new Exception();
 	}
-	@DeleteMapping("/armyUnits/{id}")
-	public void deleteArmyUnits(@PathVariable("id") final Long id) {
-		armyUnitsService.deleteArmyUnits(id);
+	@DeleteMapping({"/user/armyunits/{id}", "/admin/armyunits/{id}"})
+	public void deleteArmyUnits(@PathVariable("id") final Long id, HttpServletRequest request) throws Exception {
+		// Verify user before modify
+
+		Optional<User> userTest = repository.findByUsername(jwt.extractUsername(request.getHeader("Authorization").substring(7)));
+		Optional<ArmyUnits> e = armyUnitsService.getArmyUnits(id);
+		Optional<Army> a = armyRepository.findById((long) e.get().getIdArmy());
+		if(e.isPresent() && a.get().getIdUser() == userTest.get().getIdUser() || userTest.get().getIdRole() == 1) {
+			armyUnitsService.deleteArmyUnits(id);
+		} else throw new Exception();
 	}
 }
