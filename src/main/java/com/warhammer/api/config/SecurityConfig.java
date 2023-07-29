@@ -1,18 +1,23 @@
 package com.warhammer.api.config;
 
+import java.util.Arrays;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import lombok.RequiredArgsConstructor;
-
-import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
 @EnableWebSecurity
@@ -24,23 +29,30 @@ public class SecurityConfig{
     @Bean
     SecurityFilterChain apiSecurity(HttpSecurity http) throws Exception {
         http
-        .cors(withDefaults())
-        .csrf((csrf) -> csrf.disable())
-        .cors(Customizer.withDefaults())
-        .authorizeHttpRequests((auth) -> auth
-        				.requestMatchers("/login").permitAll()
-        				.requestMatchers("/register").permitAll()
-        				.requestMatchers("/admin/*").hasRole("ADMIN")
-        				.requestMatchers("/user/*").hasRole("USER")
-        				.requestMatchers("/public/*").permitAll()
-                        .anyRequest()
-                        .authenticated()
-        )
-        .sessionManagement((auth) -> auth
-        			.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-        		)
-        .authenticationProvider(authenticationProvider)
-        .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+                        .csrf((csrf) -> csrf.disable())
+                        .authorizeHttpRequests((auth) -> auth
+                                        .requestMatchers("/login").permitAll()
+                                        .requestMatchers("/register").permitAll()
+                                        .requestMatchers("/admin/*").hasRole("ADMIN")
+                                        .requestMatchers("/user/*").hasRole("USER")
+                                        .requestMatchers("/public/*").permitAll()
+                                        .anyRequest()
+                                        .authenticated()
+                        )
+                        .sessionManagement((auth) -> auth
+                                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                        )
+		        .authenticationProvider(authenticationProvider)
+		        .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 		return http.build();
 	}
+   
+    @Bean
+    WebMvcConfigurer corsConfigurer() {
+    	return new WebMvcConfigurer() {
+    		public void addCorsMappings(final CorsRegistry registry) {
+    			registry.addMapping("/**").allowedHeaders("*").allowedMethods("*");
+    		}
+    	};
+    }
 }
