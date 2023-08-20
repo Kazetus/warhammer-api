@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 
@@ -23,7 +22,9 @@ import com.warhammer.api.service.JwtService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 
+
 @RestController
+@CrossOrigin
 @AllArgsConstructor
 public class ArmyController {
 	@Autowired
@@ -35,7 +36,6 @@ public class ArmyController {
 	
 	@GetMapping({"/public/army", "/user/army", "/admin/army"})
 	public Iterable<Army> getArmy() {
-		System.out.println("Bonjour");
 		return armyService.getArmy();
 	}
 	

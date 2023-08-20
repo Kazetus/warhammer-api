@@ -48,6 +48,7 @@ public class UserController {
 		Optional<User> userTest = repository.findByUsername(jwt.extractUsername(request.getHeader("Authorization").substring(7)));
 		// getting the user that is going to be modified
 		Optional<User> e = userService.getUser(id);
+		// Checking that an user can only alter his own account or being an admin.
 		if(e.isPresent() && e.get().getIdUser() == userTest.get().getIdUser() || userTest.get().getIdRole() == 1) {
 			User currentUser = e.get();
 			// Checking the data we want to modify.
@@ -78,6 +79,7 @@ public class UserController {
 		Optional<User> userTest = repository.findByUsername(jwt.extractUsername(request.getHeader("Authorization").substring(7)));
 		// getting the user that is going to be modified
 		Optional<User> e = userService.getUser(id);
+		// Checking that an user can only alter his own account or being an admin.
 		if(e.isPresent() && e.get().getIdUser() == userTest.get().getIdUser() || userTest.get().getIdRole() == 1) {
 			User currentUser = e.get();
 			
@@ -97,8 +99,12 @@ public class UserController {
 	}
 	@DeleteMapping({"/user/user/{id}", "/admin/user/{id}"})
 	public void deleteUser(@PathVariable("id") final Long id, HttpServletRequest request) throws Exception {
+		// Checking that the user trying to modify an user is either this user or an admin.
+				// Getting back the user from the token send with the request
 		Optional<User> userTest = repository.findByUsername(jwt.extractUsername(request.getHeader("Authorization").substring(7)));
+		// getting the user that is going to be deleted
 		Optional<User> user = userService.getUser(id);
+		// Checking that an user can only alter his own account or being an admin.
 		if(user.isPresent() && user.get().getIdUser() == userTest.get().getIdUser() || userTest.get().getIdRole() == 1) {
 			userService.deleteUser(id);
 		} throw new Exception();

@@ -18,7 +18,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-// Filtre de connexion avec le token
+// Filter for JWT connection.
 @Configuration
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	private final JwtService jwtService = new JwtService();

@@ -68,6 +68,7 @@ public class User implements UserDetails{
 		// TODO Auto-generated method stub
 		return username;
 	}
+	// Gives the user his ranks to defines accessible routes
 	public Rank getRank() {
 		if(this.idRole == 1) {
 			this.setRank(Rank.ADMIN);
@@ -75,6 +76,17 @@ public class User implements UserDetails{
 			this.setRank(Rank.USER);
 		}
 		return this.rank;
+	}
+
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		// TODO Auto-generated method stub
+		if(this.idRole == 1) {
+			this.setRank(Rank.ADMIN);
+		} else {
+			this.setRank(Rank.USER);
+		}
+		return rank.getAuthorities();
 	}
 	@Override
 	public boolean isAccountNonExpired() {
@@ -95,15 +107,5 @@ public class User implements UserDetails{
 	public boolean isEnabled() {
 		// TODO Auto-generated method stub
 		return true;
-	}
-	@Override
-	public Collection<? extends GrantedAuthority> getAuthorities() {
-		// TODO Auto-generated method stub
-		if(this.idRole == 1) {
-			this.setRank(Rank.ADMIN);
-		} else {
-			this.setRank(Rank.USER);
-		}
-		return rank.getAuthorities();
 	}
 }
