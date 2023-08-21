@@ -27,13 +27,4 @@ public class Faction {
 	private int idAlliance;
 	@Column(name="id_edition")
 	private int idEdition;
-	/*
-	@JoinTable(name="alliance",
-			joinColumns = {@JoinColumn(name= "id_alliance")})
-	private Alliance alliance;
-	
-	@JoinTable(name="edition",
-			joinColumns = {@JoinColumn(name= "id_edition")})
-	 private Edition edition;
-	*/
 }

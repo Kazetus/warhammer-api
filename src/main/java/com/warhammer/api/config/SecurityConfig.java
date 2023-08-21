@@ -22,7 +22,7 @@ public class SecurityConfig{
 	private final AuthenticationProvider authenticationProvider;
 	// The starts of our filter chains that will determine the routes and who can access to it.
 	@Bean
-	public SecurityFilterChain apiSecurity(HttpSecurity http) throws Exception {
+	SecurityFilterChain apiSecurity(HttpSecurity http) throws Exception {
         http
         // Allowing all cors for the moments for easier development.
         .cors((cors) -> cors.configurationSource(request -> {

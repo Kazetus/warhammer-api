@@ -26,10 +26,4 @@ public class Units {
 	private int points;
 	@Column(name="id_faction")
 	private int idFaction;
-	/*
-	@JoinTable(name="faction",
-			joinColumns= {@JoinColumn(name="id_faction")}
-	)
-	private Faction faction;
-	*/
 }
