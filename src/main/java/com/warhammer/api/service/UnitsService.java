@@ -25,6 +25,9 @@ public class UnitsService {
 	public Iterable<Units> getArmyUnits(final Long id){
 		return unitsRepository.findUnitsByArmy(id);
 	}
+	public Iterable<Units> getFactionUnits(final Long id) {
+		return unitsRepository.findUnitsByFaction(id);
+	}
 	public void deleteUnits(final Long id) {
 		unitsRepository.deleteById(id);
 	}

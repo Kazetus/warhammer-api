@@ -41,6 +41,11 @@ public class UserController {
 			return user.get();
 		} else throw new Exception();
 	}
+	@GetMapping("/public/{username}")
+	public Boolean getUser(@PathVariable("username") final String username) throws Exception {
+		Optional<User> user = userService.getUserByUsername(username);
+		return user.isPresent();
+	}
 	@PutMapping({"/user/user/{id}", "/admin/user/{id}"})
 	public User updateUser(@PathVariable("id") final Long id, @RequestBody User user, HttpServletRequest request) throws Exception {
 		// Checking that the user trying to modify an user is either this user or an admin.

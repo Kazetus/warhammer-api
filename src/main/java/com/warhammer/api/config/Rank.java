@@ -8,22 +8,30 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import static com.warhammer.api.config.Permission.ADMIN_CREATE;
 import static com.warhammer.api.config.Permission.ADMIN_DELETE;
+import static com.warhammer.api.config.Permission.ADMIN_UPDATE;
 import static com.warhammer.api.config.Permission.ADMIN_READ;
 import static com.warhammer.api.config.Permission.USER_READ;
-import static com.warhammer.api.config.Permission.ADMIN_UPDATE;
+import static com.warhammer.api.config.Permission.USER_CREATE;
+import static com.warhammer.api.config.Permission.USER_DELETE;
+import static com.warhammer.api.config.Permission.USER_UPDATE;
+
+
 
 @RequiredArgsConstructor
 public enum Rank {
-	 USER(Set.of(USER_READ)),
+	 USER(Set.of(USER_READ, USER_UPDATE, USER_DELETE, USER_CREATE)),
 	  ADMIN(
 	          Set.of(
 	                  ADMIN_READ,
 	                  ADMIN_UPDATE,
 	                  ADMIN_DELETE,
 	                  ADMIN_CREATE,
-	                  USER_READ
+	                  USER_READ,
+	                  USER_UPDATE,
+	                  USER_DELETE,
+	                  USER_CREATE
 	          )
-	  )
+	  ),
 
 	  ;
 

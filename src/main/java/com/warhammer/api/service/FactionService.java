@@ -23,6 +23,9 @@ public class FactionService {
 	public Iterable<Faction> getFaction() {
 		return factionRepository.findAll();
 	}
+	public Iterable<Faction> getFactionAlliance(final Long id) {
+		return factionRepository.findFactionByAlliance(id);
+	}
 	public void deleteFaction(final Long id) {
 		factionRepository.deleteById(id);
 	}

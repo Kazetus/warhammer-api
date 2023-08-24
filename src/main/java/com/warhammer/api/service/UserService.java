@@ -23,6 +23,9 @@ public class UserService {
 	public Iterable<User> getUser() {
 		return userRepository.findAll();
 	}
+	public Optional<User> getUserByUsername(final String username){
+		return userRepository.findByUsername(username);
+	}
 	public void deleteUser(final Long id) {
 		userRepository.deleteById(id);
 	}

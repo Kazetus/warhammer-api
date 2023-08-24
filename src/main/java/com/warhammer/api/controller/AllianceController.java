@@ -3,6 +3,7 @@ package com.warhammer.api.controller;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -14,18 +15,26 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.warhammer.api.model.Alliance;
 import com.warhammer.api.service.AllianceService;
+import com.warhammer.api.service.FactionService;
 
 import lombok.AllArgsConstructor;
 
 @RestController
+@CrossOrigin
 @AllArgsConstructor
 public class AllianceController {
 	@Autowired
 	private AllianceService allianceService;
+	@Autowired
+	private FactionService factionService;
 	
 	@GetMapping({"/public/alliance","user/alliance","admin/alliance"})
 	public Iterable<Alliance> getAlliance() {
-		return allianceService.getAlliance();
+		Iterable<Alliance> alliance = allianceService.getAlliance();
+		for(Alliance ally : alliance) {
+			ally.setFaction(factionService.getFactionAlliance(Long.valueOf(ally.getIdAlliance())));
+		}
+		return alliance;
 	}
 	
 	@GetMapping({"/public/alliance/{id}","user/alliance/id","admin/alliance/{id}"})
@@ -37,12 +46,10 @@ public class AllianceController {
 	}
 	@PostMapping("/admin/alliance")
 	public Alliance createAlliance(@RequestBody Alliance alliance) {
-		//alliance.setPassword(passwordEncoder.encode(alliance.getPassword()));
 		return allianceService.saveAlliance(alliance);
 	}
 	@PutMapping("/admin/alliance/{id}")
 	public Alliance updateAlliance(@PathVariable("id") final Long id, @RequestBody Alliance alliance) throws Exception {
-		//alliance.setPassword(passwordEncoder.encode(alliance.getPassword()));
 		Optional<Alliance> e = allianceService.getAlliance(id);
 		if(e.isPresent()) {
 			Alliance currentAlliance = e.get();
@@ -57,7 +64,6 @@ public class AllianceController {
 	}
 	@PatchMapping("/admin/alliance/{id}")
 	public Alliance patchAlliance(@PathVariable("id") final Long id, @RequestBody Alliance alliance) throws Exception{
-		//alliance.setPassword(passwordEncoder.encode(alliance.getPassword()));		
 		Optional<Alliance> e = allianceService.getAlliance(id);
 		if(e.isPresent()) {
 			Alliance currentAlliance = e.get();

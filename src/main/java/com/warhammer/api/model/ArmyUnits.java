@@ -10,14 +10,18 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.JoinColumn;
 */
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Data
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "army_units")
 public class ArmyUnits {
 	@Id
@@ -28,13 +32,9 @@ public class ArmyUnits {
 	private int idArmy;
 	@Column(name="id_units")
 	private int idUnits;
-	/*
-	@JoinTable(name="army",
-			joinColumns= {@JoinColumn(name="id_army")})
-	private Army army;
-	
-	@JoinTable(name="units",
-			joinColumns= {@JoinColumn(name="id_units")})
-	private Units units;
-	*/
+	public ArmyUnits(int quantity, Long idUnits, Long idArmy) {
+		this.quantity = quantity;
+		this.idUnits = Math.toIntExact(idUnits);
+		this.idArmy = Math.toIntExact(idArmy);
+	}
 }

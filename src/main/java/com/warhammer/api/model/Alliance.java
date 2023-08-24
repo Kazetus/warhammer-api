@@ -2,6 +2,7 @@ package com.warhammer.api.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import jakarta.persistence.Id;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Column;
@@ -20,4 +21,7 @@ public class Alliance {
 
 	@Column(name="alliance_name")
 	private String allianceName;
+	@Transient
+	private Iterable<Faction> faction;
+	
 }

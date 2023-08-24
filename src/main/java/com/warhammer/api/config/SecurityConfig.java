@@ -27,7 +27,7 @@ public class SecurityConfig{
         // Allowing all cors for the moments for easier development.
         .cors((cors) -> cors.configurationSource(request -> {
                 CorsConfiguration config = new CorsConfiguration();
-                config.addAllowedOrigin("*"); // Allow all origins. You can restrict it to specific origins if needed.
+                config.addAllowedOrigin("http://localhost:4200/"); // Allow all origins. You can restrict it to specific origins if needed.
                 config.addAllowedMethod("*"); // Allow all HTTP methods.
                 config.addAllowedHeader("*"); // Allow all headers.
                 config.setAllowCredentials(false); // Allow credentials like cookies, authentication headers, etc.
@@ -39,7 +39,8 @@ public class SecurityConfig{
         .authorizeHttpRequests((auth) -> auth
         				.requestMatchers("/login").permitAll()
         				.requestMatchers("/register").permitAll()
-        				.requestMatchers("/admin").hasRole("ADMIN")
+        				.requestMatchers("/admin/*").hasRole("ADMIN")
+        				.requestMatchers("/user/*").hasRole("USER")
         				.requestMatchers("/public/*").permitAll()
                         .anyRequest()
                         .authenticated()

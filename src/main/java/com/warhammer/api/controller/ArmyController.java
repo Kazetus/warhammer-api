@@ -14,12 +14,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.warhammer.api.model.Alliance;
 import com.warhammer.api.model.Army;
+import com.warhammer.api.model.ArmyUnits;
 import com.warhammer.api.model.Edition;
 import com.warhammer.api.model.Faction;
+import com.warhammer.api.model.Units;
 import com.warhammer.api.model.User;
 import com.warhammer.api.repository.UserRepository;
 import com.warhammer.api.service.AllianceService;
 import com.warhammer.api.service.ArmyService;
+import com.warhammer.api.service.ArmyUnitsService;
 import com.warhammer.api.service.EditionService;
 import com.warhammer.api.service.FactionService;
 import com.warhammer.api.service.JwtService;
@@ -43,6 +46,8 @@ public class ArmyController {
 	private AllianceService allianceService;
 	@Autowired
 	private EditionService editionService;
+	@Autowired
+	private ArmyUnitsService armyUnitsService;
 	@Autowired 
 	private UserRepository repository;
 	@Autowired
@@ -77,8 +82,17 @@ public class ArmyController {
 		} else throw new Exception();
 	}
 	@PostMapping({"/user/army","/admin/army"})
-	public Army createArmy(@RequestBody Army army) {
-		return armyService.saveArmy(army);
+	public Army createArmy(@RequestBody Army army, HttpServletRequest request) {
+		System.out.println(army);
+		Optional<User> userTest = repository.findByUsername(jwt.extractUsername(request.getHeader("authorization").substring(7)));
+		army.setIdUser(Math.toIntExact(userTest.get().getIdUser()));
+		army = armyService.saveArmy(army);
+		for(Units unit : army.getUnits()) {
+			ArmyUnits armyUnits = new ArmyUnits(1, unit.getIdUnits(), army.getIdArmy());
+			System.out.println(armyUnits);
+			armyUnitsService.saveArmyUnits(armyUnits);
+		}
+		return army;
 	}
 	@PutMapping({"/user/army/{id}", "/admin/army/{id}"})
 	public Army updateArmy(@PathVariable("id") final Long id, @RequestBody Army army, HttpServletRequest request) throws Exception {

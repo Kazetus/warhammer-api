@@ -3,6 +3,7 @@ package com.warhammer.api.controller;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -10,17 +11,30 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.warhammer.api.model.Faction;
 import com.warhammer.api.service.FactionService;
+import com.warhammer.api.service.UnitsService;
 
+import lombok.AllArgsConstructor;
+
+@RestController
+@CrossOrigin
+@AllArgsConstructor
 public class FactionController {
 	@Autowired
 	private FactionService factionService;
+	@Autowired
+	private UnitsService unitsService;
 	
 	@GetMapping({"/public/faction", "/user/faction", "/admin/faction"})
 	public Iterable<Faction> getFaction() {
-		return factionService.getFaction();
+		Iterable<Faction> faction = factionService.getFaction();
+		for(Faction fact : faction) {
+			fact.setUnits(unitsService.getFactionUnits(fact.getIdFaction()));
+		}
+		return faction;
 	}
 	
 	@GetMapping({"/public/faction/{id}", "/user/faction/{id}", "/admin/faction/{id}"})
@@ -32,12 +46,11 @@ public class FactionController {
 	}
 	@PostMapping("/admin/faction")
 	public Faction createFaction(@RequestBody Faction faction) {
-		//faction.setPassword(passwordEncoder.encode(faction.getPassword()));
 		return factionService.saveFaction(faction);
 	}
 	@PutMapping("/admin/faction/{id}")
 	public Faction upidAlliance(@PathVariable("id") final Long id, @RequestBody Faction faction) throws Exception {
-		//faction.setPassword(passwordEncoder.encode(faction.getPassword()));
+		
 		Optional<Faction> e = factionService.getFaction(id);
 		if(e.isPresent()) {
 			Faction currentFaction = e.get();
@@ -59,8 +72,7 @@ public class FactionController {
 		} else throw new Exception();
 	}
 	@PatchMapping("/admin/faction/{id}")
-	public Faction patchFaction(@PathVariable("id") final Long id, @RequestBody Faction faction) throws Exception{
-		//faction.setPassword(passwordEncoder.encode(faction.getPassword()));		
+	public Faction patchFaction(@PathVariable("id") final Long id, @RequestBody Faction faction) throws Exception{		
 		Optional<Faction> e = factionService.getFaction(id);
 		if(e.isPresent()) {
 			Faction currentFaction = e.get();
