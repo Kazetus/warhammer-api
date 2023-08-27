@@ -15,13 +15,6 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-/*
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.JoinColumn;
-*/
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
@@ -50,15 +43,8 @@ public class User implements UserDetails{
 	 private String password;
 	 @Column(name="id_role")
 	 private int idRole;
-	 /*
-	 @JdbcTypeCode(SqlTypes.JSON)
 	 @Transient
-	 @ManyToOne
-	 @JoinTable(name="role",
-			 joinColumns = {@JoinColumn(name="id_role")},
-			 inverseJoinColumns = {@JoinColumn(name="id_role")})
-	 private Role role;
-	 */
+	 private Iterable<Army> army;
 	 @Enumerated(EnumType.STRING)
 	 @Transient
 	 private Rank rank;

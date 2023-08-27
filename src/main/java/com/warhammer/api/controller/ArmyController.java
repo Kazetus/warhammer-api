@@ -12,21 +12,14 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.warhammer.api.model.Alliance;
 import com.warhammer.api.model.Army;
 import com.warhammer.api.model.ArmyUnits;
-import com.warhammer.api.model.Edition;
-import com.warhammer.api.model.Faction;
 import com.warhammer.api.model.Units;
 import com.warhammer.api.model.User;
 import com.warhammer.api.repository.UserRepository;
-import com.warhammer.api.service.AllianceService;
 import com.warhammer.api.service.ArmyService;
 import com.warhammer.api.service.ArmyUnitsService;
-import com.warhammer.api.service.EditionService;
-import com.warhammer.api.service.FactionService;
 import com.warhammer.api.service.JwtService;
-import com.warhammer.api.service.UnitsService;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
@@ -39,14 +32,6 @@ public class ArmyController {
 	@Autowired
 	private ArmyService armyService;
 	@Autowired
-	private UnitsService unitsService;
-	@Autowired
-	private FactionService factionService;
-	@Autowired
-	private AllianceService allianceService;
-	@Autowired
-	private EditionService editionService;
-	@Autowired
 	private ArmyUnitsService armyUnitsService;
 	@Autowired 
 	private UserRepository repository;
@@ -56,21 +41,6 @@ public class ArmyController {
 	@GetMapping({"/public/army", "/user/army", "/admin/army"})
 	public Iterable<Army> getArmy() {
 		Iterable<Army> armyList = armyService.getArmy();
-		for(Army army : armyList) {
-			army.setUnits(unitsService.getArmyUnits(army.getIdArmy()));
-			Optional<Faction> faction = factionService.getFaction(army.getIdFaction());
-			if(faction.isPresent()){
-				army.setFaction(faction.get().getFactionName());
-				Optional<Alliance> alliance = allianceService.getAlliance(Long.valueOf(faction.get().getIdAlliance()));
-				if(alliance.isPresent()) {
-					army.setAlliance(alliance.get().getAllianceName());
-				}
-				Optional<Edition> edition = editionService.getEdition(Long.valueOf(faction.get().getIdEdition()));
-				if(edition.isPresent()) {
-					army.setEdition(edition.get().getEditionName());
-				}
-			}
-		}
 		return armyList; 
 	}
 	

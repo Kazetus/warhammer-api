@@ -46,6 +46,13 @@ public class UserController {
 		Optional<User> user = userService.getUserByUsername(username);
 		return user.isPresent();
 	}
+	@GetMapping("/user/userdata")
+	public User getUserData(HttpServletRequest request) throws Exception {
+		Optional<User> user = userService.getUserWithDataByUsername(jwt.extractUsername(request.getHeader("Authorization").substring(7)));
+		if(user.isPresent()) {
+			return user.get();
+		} else throw new Exception();
+	}
 	@PutMapping({"/user/user/{id}", "/admin/user/{id}"})
 	public User updateUser(@PathVariable("id") final Long id, @RequestBody User user, HttpServletRequest request) throws Exception {
 		// Checking that the user trying to modify an user is either this user or an admin.

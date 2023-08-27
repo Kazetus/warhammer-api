@@ -2,7 +2,9 @@ package com.warhammer.api.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -12,6 +14,7 @@ import com.warhammer.api.model.AuthenticationResponse;
 import com.warhammer.api.model.RegisterRequest;
 import com.warhammer.api.service.AuthenticationService;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 
 @CrossOrigin(origins = "http://localhost:4200")
@@ -30,5 +33,9 @@ public class AuthenticationController {
 	@PostMapping("/login")
 	public ResponseEntity<AuthenticationResponse> login(@RequestBody AuthenticationRequest request) {
 		return ResponseEntity.ok(service.authentication(request));
+	}
+	@GetMapping("/check")
+	public Boolean check(@NonNull HttpServletRequest request) {
+		return true;
 	}
 }
