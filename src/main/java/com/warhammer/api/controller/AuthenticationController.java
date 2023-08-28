@@ -38,4 +38,8 @@ public class AuthenticationController {
 	public Boolean check(@NonNull HttpServletRequest request) {
 		return true;
 	}
+	@PostMapping("/check")
+	public Boolean check(@RequestBody AuthenticationRequest request) {
+		return service.checkPassword(request);
+	}
 }

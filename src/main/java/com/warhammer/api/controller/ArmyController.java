@@ -104,6 +104,7 @@ public class ArmyController {
 	}
 	@DeleteMapping({"/user/army/{id}", "/admin/army/{id}"})
 	public void deleteArmy(@PathVariable("id") final Long id, HttpServletRequest request) throws Exception {
+		System.out.println("ici");
 		// Verify user before delete
 		Optional<User> userTest = repository.findByUsername(jwt.extractUsername(request.getHeader("Authorization").substring(7)));
 		Optional<Army> e = armyService.getArmy(id);

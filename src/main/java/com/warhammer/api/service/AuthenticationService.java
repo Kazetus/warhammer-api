@@ -47,5 +47,9 @@ public class AuthenticationService {
 				.token(jwtToken)
 				.build();
 	}
-
+	
+	public Boolean checkPassword(AuthenticationRequest request) {
+		authManager.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(),request.getPassword()));
+		return true;
+	}
 }
