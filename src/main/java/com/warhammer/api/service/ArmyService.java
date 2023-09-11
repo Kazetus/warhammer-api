@@ -10,7 +10,9 @@ import com.warhammer.api.model.Alliance;
 import com.warhammer.api.model.Army;
 import com.warhammer.api.model.Edition;
 import com.warhammer.api.model.Faction;
+import com.warhammer.api.model.UserArmy;
 import com.warhammer.api.repository.ArmyRepository;
+import com.warhammer.api.repository.UserArmyRepository;
 
 import lombok.Data;
 
@@ -18,6 +20,8 @@ import lombok.Data;
 @Service
 public class ArmyService {
 	
+	@Autowired
+	private UserArmyRepository userArmyRepository;
 	@Autowired
 	private ArmyRepository armyRepository;
 	@Autowired 
@@ -48,10 +52,10 @@ public class ArmyService {
 		}
 		return army;
 	}
-	public Iterable<Army> getUserArmy(final Long id){
-		Iterable<Army> armies = armyRepository.findByIdUser(id);
-		for(Army army : armies) {
-			army.setUnits(unitsService.getArmyUnits(army.getIdArmy()));
+	public Iterable<UserArmy> getUserArmy(final Long id){
+		Iterable<UserArmy> armies = userArmyRepository.findByIdUser(id);
+		for(UserArmy army : armies) {
+			army.setUnits(unitsService.getUserArmyUnits(army.getIdArmy()));
 			Optional<Faction> faction = factionService.getFaction(army.getIdFaction());
 			if(faction.isPresent()){
 				army.setFaction(faction.get().getFactionName());

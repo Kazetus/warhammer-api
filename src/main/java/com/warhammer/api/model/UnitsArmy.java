@@ -23,12 +23,19 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "army_units")
-public class ArmyUnits {
+public class UnitsArmy {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	 private long idArmyUnits;
+	private long idArmyUnits;
 	@Column(name="id_army")
 	private int idArmy;
 	@Column(name="id_units")
 	private int idUnits;
+	@Column(name="units_name")
+	private String unitsName;
+	@Column(name="nombre_figurine")
+	private int nombreFigurine;
+	private int points;
+	@Column(name="id_faction")
+	private int idFaction;
 }

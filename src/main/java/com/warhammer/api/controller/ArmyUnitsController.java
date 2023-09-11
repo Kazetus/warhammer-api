@@ -47,7 +47,6 @@ public class ArmyUnitsController {
 	}
 	@PostMapping({"/user/armyunits", "/admin/armyunits"})
 	public ArmyUnits createArmyUnits(@RequestBody ArmyUnits armyUnits) {
-		
 		return armyUnitsService.saveArmyUnits(armyUnits);
 	}
 	@PutMapping({"/user/armyunits/{id}", "/admin/armyunits/{id}"})
@@ -92,8 +91,7 @@ public class ArmyUnitsController {
 	}
 	@DeleteMapping({"/user/armyunits/{id}", "/admin/armyunits/{id}"})
 	public void deleteArmyUnits(@PathVariable("id") final Long id, HttpServletRequest request) throws Exception {
-		// Verify user before modify
-
+		// Verify user before deleting
 		Optional<User> userTest = repository.findByUsername(jwt.extractUsername(request.getHeader("Authorization").substring(7)));
 		Optional<ArmyUnits> e = armyUnitsService.getArmyUnits(id);
 		Optional<Army> a = armyRepository.findById((long) e.get().getIdArmy());

@@ -44,7 +44,7 @@ public class User implements UserDetails{
 	 @Column(name="id_role")
 	 private int idRole;
 	 @Transient
-	 private Iterable<Army> army;
+	 private Iterable<UserArmy> army;
 	 @Enumerated(EnumType.STRING)
 	 @Transient
 	 private Rank rank;

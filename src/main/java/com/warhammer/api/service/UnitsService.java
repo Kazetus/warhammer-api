@@ -1,7 +1,8 @@
 package com.warhammer.api.service;
 
-import com.warhammer.api.model.ArmyUnits;
+import com.warhammer.api.model.UnitsArmy;
 import com.warhammer.api.model.Units;
+import com.warhammer.api.repository.UnitsArmyRepository;
 import com.warhammer.api.repository.UnitsRepository;
 
 import lombok.Data;
@@ -16,6 +17,8 @@ import org.springframework.stereotype.Service;
 public class UnitsService {
 	@Autowired
 	private UnitsRepository unitsRepository;
+	@Autowired
+	private UnitsArmyRepository unitsArmyRepository;
 	
 	public Optional<Units> getUnits(final Long id){
 		return unitsRepository.findById(id);
@@ -23,8 +26,12 @@ public class UnitsService {
 	public Iterable<Units> getUnits() {
 		return unitsRepository.findAll();
 	}
-	public Iterable<ArmyUnits> getArmyUnits(final Long id){
-		Iterable<ArmyUnits> armyUnits = unitsRepository.findUnitsByArmy(id);
+	public Iterable<Units> getArmyUnits(final Long id){
+		Iterable<Units> armyUnits = unitsRepository.findUnitsByArmy(id);
+		return armyUnits;
+	}
+	public Iterable<UnitsArmy> getUserArmyUnits(final Long id){
+		Iterable<UnitsArmy> armyUnits = unitsArmyRepository.findArmyUnitsByArmy(id);
 		return armyUnits;
 	}
 	public Iterable<Units> getFactionUnits(final Long id) {

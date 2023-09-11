@@ -55,7 +55,7 @@ public class ArmyController {
 		army.setIdUser(Math.toIntExact(userTest.get().getIdUser()));
 		army = armyService.saveArmy(army);
 		for(Units unit : army.getUnits()) {
-			ArmyUnits armyUnits = new ArmyUnits(1, unit.getIdUnits(), army.getIdArmy());
+			ArmyUnits armyUnits = new ArmyUnits(Long.valueOf(1),(int) unit.getIdUnits(), (int) army.getIdArmy());
 			armyUnitsService.saveArmyUnits(armyUnits);
 		}
 		return army;
@@ -104,7 +104,7 @@ public class ArmyController {
 		Optional<User> userTest = repository.findByUsername(jwt.extractUsername(request.getHeader("Authorization").substring(7)));
 		Optional<Army> e = armyService.getArmy(id);
 		if(e.isPresent() && e.get().getIdUser() == userTest.get().getIdUser() || userTest.get().getIdRole() == 1) {
-		armyService.deleteArmy(id);
+			armyService.deleteArmy(id);
 		} else throw new Exception();
 	}
 }
