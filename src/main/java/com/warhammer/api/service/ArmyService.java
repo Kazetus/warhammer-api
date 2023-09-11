@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.util.HtmlUtils;
 
 import com.warhammer.api.model.Alliance;
 import com.warhammer.api.model.Army;
@@ -34,7 +35,7 @@ public class ArmyService {
 			army.get().setUnits(unitsService.getArmyUnits(army.get().getIdArmy()));
 			Optional<Faction> faction = factionService.getFaction(army.get().getIdFaction());
 			if(faction.isPresent()){
-				army.get().setFaction(faction.get().getFactionName());
+				army.get().setFaction(HtmlUtils.htmlEscape(faction.get().getFactionName()));
 				Optional<Alliance> alliance = allianceService.getAlliance(Long.valueOf(faction.get().getIdAlliance()));
 				if(alliance.isPresent()) {
 					army.get().setAlliance(alliance.get().getAllianceName());

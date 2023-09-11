@@ -37,13 +37,11 @@ public class ArmyController {
 	private UserRepository repository;
 	@Autowired
 	private JwtService jwt;
-	
 	@GetMapping({"/public/army", "/user/army", "/admin/army"})
 	public Iterable<Army> getArmy() {
 		Iterable<Army> armyList = armyService.getArmy();
 		return armyList; 
 	}
-	
 	@GetMapping({"/public/army/{id}", "/user/army/{id}", "/admin/army/{id}"})
 	public Army getArmy(@PathVariable("id") final Long id) throws Exception{
 		Optional<Army> army = armyService.getArmy(id);
@@ -53,25 +51,22 @@ public class ArmyController {
 	}
 	@PostMapping({"/user/army","/admin/army"})
 	public Army createArmy(@RequestBody Army army, HttpServletRequest request) {
-		System.out.println(army);
 		Optional<User> userTest = repository.findByUsername(jwt.extractUsername(request.getHeader("authorization").substring(7)));
 		army.setIdUser(Math.toIntExact(userTest.get().getIdUser()));
 		army = armyService.saveArmy(army);
 		for(Units unit : army.getUnits()) {
 			ArmyUnits armyUnits = new ArmyUnits(1, unit.getIdUnits(), army.getIdArmy());
-			System.out.println(armyUnits);
 			armyUnitsService.saveArmyUnits(armyUnits);
 		}
 		return army;
 	}
 	@PutMapping({"/user/army/{id}", "/admin/army/{id}"})
 	public Army updateArmy(@PathVariable("id") final Long id, @RequestBody Army army, HttpServletRequest request) throws Exception {
-		// Verify user before modify
+		// Verify user before editing
 		Optional<User> userTest = repository.findByUsername(jwt.extractUsername(request.getHeader("Authorization").substring(7)));
 		Optional<Army> e = armyService.getArmy(id);
 		if(e.isPresent() && e.get().getIdUser() == userTest.get().getIdUser() || userTest.get().getIdRole() == 1) {
 			Army currentArmy = e.get();
-			
 			String armyName = army.getArmyName();
 			if(armyName != null) {
 				currentArmy.setArmyName(armyName);

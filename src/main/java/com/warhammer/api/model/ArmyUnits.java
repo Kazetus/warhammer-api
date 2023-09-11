@@ -26,15 +26,16 @@ import lombok.Setter;
 public class ArmyUnits {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private long idArmyUnits;
-	private int quantity;
+	 private long idArmyUnits;
+	@Column(name="units_name")
+	private String unitsName;
+	@Column(name="nombre_figurine")
+	private int nombreFigurine;
+	private int points;
+	@Column(name="id_faction")
+	private int idFaction;
 	@Column(name="id_army")
 	private int idArmy;
 	@Column(name="id_units")
 	private int idUnits;
-	public ArmyUnits(int quantity, Long idUnits, Long idArmy) {
-		this.quantity = quantity;
-		this.idUnits = Math.toIntExact(idUnits);
-		this.idArmy = Math.toIntExact(idArmy);
-	}
 }

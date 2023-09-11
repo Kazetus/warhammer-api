@@ -59,11 +59,6 @@ public class ArmyUnitsController {
 		Optional<Army> a = armyRepository.findById((long) e.get().getIdArmy());
 		if(e.isPresent() && a.get().getIdUser() == userTest.get().getIdUser() || userTest.get().getIdRole() == 1) {
 			ArmyUnits currentArmyUnits = e.get();
-			
-			int quantity = armyUnits.getQuantity();
-			if(quantity != 0) {
-				currentArmyUnits.setQuantity(quantity);
-			}
 			int idArmy = armyUnits.getIdArmy();
 			if(idArmy != 0) {
 				currentArmyUnits.setIdArmy(idArmy);;
@@ -85,11 +80,9 @@ public class ArmyUnitsController {
 		Optional<Army> a = armyRepository.findById((long) e.get().getIdArmy());
 		if(e.isPresent() && a.get().getIdUser() == userTest.get().getIdUser() || userTest.get().getIdRole() == 1) {
 			ArmyUnits currentArmyUnits = e.get();
-			int quantity = armyUnits.getQuantity();
 			int idArmy = armyUnits.getIdArmy();
 			int idUnits = armyUnits.getIdUnits();
-			if(quantity != 0 && idArmy != 0 && idUnits !=0) {
-				currentArmyUnits.setQuantity(quantity);
+			if(idArmy != 0 && idUnits !=0) {
 				currentArmyUnits.setIdArmy(idArmy);
 				currentArmyUnits.setIdUnits(idUnits);
 				armyUnitsService.saveArmyUnits(currentArmyUnits);

@@ -1,5 +1,6 @@
 package com.warhammer.api.service;
 
+import com.warhammer.api.model.ArmyUnits;
 import com.warhammer.api.model.Units;
 import com.warhammer.api.repository.UnitsRepository;
 
@@ -22,8 +23,9 @@ public class UnitsService {
 	public Iterable<Units> getUnits() {
 		return unitsRepository.findAll();
 	}
-	public Iterable<Units> getArmyUnits(final Long id){
-		return unitsRepository.findUnitsByArmy(id);
+	public Iterable<ArmyUnits> getArmyUnits(final Long id){
+		Iterable<ArmyUnits> armyUnits = unitsRepository.findUnitsByArmy(id);
+		return armyUnits;
 	}
 	public Iterable<Units> getFactionUnits(final Long id) {
 		return unitsRepository.findUnitsByFaction(id);
