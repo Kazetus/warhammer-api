@@ -55,7 +55,7 @@ public class ArmyController {
 		army.setIdUser(Math.toIntExact(userTest.get().getIdUser()));
 		army = armyService.saveArmy(army);
 		for(Units unit : army.getUnits()) {
-			ArmyUnits armyUnits = new ArmyUnits(Long.valueOf(1),(int) unit.getIdUnits(), (int) army.getIdArmy());
+			ArmyUnits armyUnits = new ArmyUnits(Long.valueOf(1), Math.toIntExact(army.getIdArmy()), Math.toIntExact(unit.getIdUnits()));
 			armyUnitsService.saveArmyUnits(armyUnits);
 		}
 		return army;
@@ -99,7 +99,6 @@ public class ArmyController {
 	}
 	@DeleteMapping({"/user/army/{id}", "/admin/army/{id}"})
 	public void deleteArmy(@PathVariable("id") final Long id, HttpServletRequest request) throws Exception {
-		System.out.println("ici");
 		// Verify user before delete
 		Optional<User> userTest = repository.findByUsername(jwt.extractUsername(request.getHeader("Authorization").substring(7)));
 		Optional<Army> e = armyService.getArmy(id);
